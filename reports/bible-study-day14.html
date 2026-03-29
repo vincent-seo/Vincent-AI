@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>📜 성경 역사 14일차 — 십계명과 모세 율법의 고대 법전 비교</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', 'Apple SD Gothic Neo', sans-serif;
+      background: #0d0a06;
+      color: #e8e0d0;
+      line-height: 1.85;
+      padding: 20px;
+    }
+
+    .container { max-width: 720px; margin: 0 auto; }
+
+    .header {
+      text-align: center;
+      padding: 44px 20px 32px;
+      border-bottom: 1px solid #2e2618;
+      margin-bottom: 32px;
+      background: radial-gradient(ellipse at top, #1a1208 0%, transparent 70%);
+    }
+
+    .day-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, #c9a227, #e8c96a);
+      color: #1a0e00;
+      font-size: 12px;
+      font-weight: 800;
+      padding: 4px 16px;
+      border-radius: 20px;
+      margin-bottom: 14px;
+      letter-spacing: 1.5px;
+    }
+
+    .header h1 {
+      font-size: 26px;
+      font-weight: 800;
+      color: #f0e0b0;
+      margin-bottom: 8px;
+      line-height: 1.35;
+    }
+
+    .header .subtitle { color: #8a7a5a; font-size: 14px; }
+
+    .time-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #1a1208;
+      border: 1px solid #2e2618;
+      border-radius: 20px;
+      padding: 5px 14px;
+      font-size: 13px;
+      color: #7a6a4a;
+      margin-top: 12px;
+    }
+
+    .section {
+      background: #130f08;
+      border: 1px solid #2e2618;
+      border-radius: 16px;
+      padding: 28px;
+      margin-bottom: 20px;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 17px;
+      font-weight: 700;
+      color: #f0e0b0;
+      margin-bottom: 16px;
+    }
+
+    .section-title .icon { font-size: 22px; }
+
+    p { color: #c0b090; margin-bottom: 12px; font-size: 15px; }
+
+    .hl { color: #c9a227; font-weight: 700; }
+    .hl-red { color: #e07050; font-weight: 700; }
+    .hl-green { color: #7abf8a; font-weight: 700; }
+
+    .quote-box {
+      background: linear-gradient(135deg, #1a1208, #120d06);
+      border-left: 4px solid #c9a227;
+      border-radius: 0 12px 12px 0;
+      padding: 16px 20px;
+      margin: 16px 0;
+      font-style: italic;
+    }
+
+    .quote-box .quote-text { color: #d4c090; font-size: 14px; line-height: 1.7; }
+    .quote-box .quote-source { margin-top: 8px; font-size: 12px; color: #7a6a4a; font-style: normal; }
+
+    .info-box {
+      background: #1a1208;
+      border: 1px solid #3e3010;
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin: 16px 0;
+    }
+
+    .info-box .info-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #c9a227;
+      margin-bottom: 8px;
+      letter-spacing: 0.5px;
+    }
+
+    .info-box p { font-size: 13px; color: #a09070; margin: 0; }
+
+    /* 비교 테이블 */
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      font-size: 13px;
+    }
+
+    .compare-table th {
+      background: #1e1608;
+      color: #c9a227;
+      padding: 10px 14px;
+      text-align: left;
+      border: 1px solid #2e2618;
+      font-weight: 700;
+    }
+
+    .compare-table td {
+      padding: 10px 14px;
+      border: 1px solid #2a1e10;
+      color: #b0a080;
+      vertical-align: top;
+    }
+
+    .compare-table tr:nth-child(even) td { background: #110d07; }
+    .compare-table tr:nth-child(odd) td { background: #0d0a06; }
+
+    /* 계명 카드 */
+    .commandment-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin: 16px 0;
+    }
+
+    @media (max-width: 500px) { .commandment-grid { grid-template-columns: 1fr; } }
+
+    .cmd-card {
+      background: #0d0a06;
+      border: 1px solid #2e2618;
+      border-radius: 12px;
+      padding: 14px;
+    }
+
+    .cmd-num {
+      font-size: 11px;
+      font-weight: 800;
+      color: #c9a227;
+      letter-spacing: 1px;
+      margin-bottom: 4px;
+    }
+
+    .cmd-title { font-size: 14px; font-weight: 700; color: #f0e0b0; margin-bottom: 4px; }
+    .cmd-desc { font-size: 12px; color: #7a6a4a; }
+
+    /* 고대 법전 카드 */
+    .law-card {
+      background: #0d0a06;
+      border: 1px solid #2e2618;
+      border-left: 3px solid #c9a227;
+      border-radius: 0 12px 12px 0;
+      padding: 16px 18px;
+      margin-bottom: 14px;
+    }
+
+    .law-name { font-size: 15px; font-weight: 700; color: #f0e0b0; margin-bottom: 4px; }
+    .law-date { font-size: 12px; color: #c9a227; margin-bottom: 8px; }
+    .law-desc { font-size: 13px; color: #a09070; }
+
+    .diff-box {
+      display: flex;
+      gap: 12px;
+      margin: 14px 0;
+    }
+
+    .diff-col {
+      flex: 1;
+      background: #0d0a06;
+      border: 1px solid #2e2618;
+      border-radius: 12px;
+      padding: 14px;
+    }
+
+    .diff-col.old { border-top: 3px solid #8a6030; }
+    .diff-col.new { border-top: 3px solid #4a8a60; }
+
+    .diff-col .diff-title { font-size: 13px; font-weight: 700; margin-bottom: 10px; }
+    .diff-col.old .diff-title { color: #c98040; }
+    .diff-col.new .diff-title { color: #5abf8a; }
+    .diff-col ul { padding-left: 16px; }
+    .diff-col ul li { font-size: 13px; color: #9a8a6a; margin-bottom: 6px; }
+
+    .footer {
+      text-align: center;
+      padding: 28px 20px;
+      border-top: 1px solid #2e2618;
+      margin-top: 32px;
+    }
+
+    .footer p { color: #5a4a2a; font-size: 13px; }
+
+    .nav-link {
+      display: inline-block;
+      margin-top: 12px;
+      font-size: 13px;
+      color: #c9a227;
+      text-decoration: none;
+      opacity: 0.8;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <!-- 헤더 -->
+  <div class="header">
+    <div class="day-badge">DAY 14 · 50일 성경 역사</div>
+    <h1>⚖️ 십계명과 모세 율법의<br>고대 법전 비교</h1>
+    <div class="subtitle">BC 1446 ~ BC 1406 · 시나이 산 / 고대 근동</div>
+    <div class="time-badge">⏱️ 약 10분 분량</div>
+  </div>
+
+  <!-- 오늘의 핵심 질문 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">❓</span> 오늘의 핵심 질문</div>
+    <p>모세가 시나이 산에서 받은 <span class="hl">십계명</span>과 <span class="hl">모세 율법</span>은 완전히 독창적인 것일까요? 아니면 고대 근동의 다른 법전들과 어떤 관계가 있을까요?</p>
+    <p>1901년 이란 수사(Susa) 지역에서 고고학자들이 <span class="hl">함무라비 법전</span>을 발굴했을 때, 학계는 충격에 빠졌습니다. 성경의 율법과 너무나 닮은 조항들이 수백 개나 담겨 있었기 때문입니다. 그렇다면 이스라엘의 율법은 단순히 차용한 것일까요, 아니면 더 깊은 의미가 있는 것일까요?</p>
+    <div class="quote-box">
+      <div class="quote-text">"나는 여호와 네 하나님이라. 너를 애굽 땅, 종 되었던 집에서 인도하여 낸 자니라. 너는 나 외에는 다른 신들을 네게 두지 말라."</div>
+      <div class="quote-source">— 출애굽기 20:2–3 (십계명의 서문과 제1계명)</div>
+    </div>
+  </div>
+
+  <!-- 십계명이란 무엇인가 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">📋</span> 십계명 — 열 개의 말씀</div>
+    <p>히브리어로 <span class="hl">'아세렛 하데바림'(עֲשֶׂרֶת הַדְּבָרִים)</span>, 즉 '열 개의 말씀'이라 불리는 십계명은 출애굽기 20장과 신명기 5장 두 곳에 기록되어 있습니다. 유대교, 가톨릭, 개신교가 계명을 묶는 방식이 조금씩 다르지만 내용은 동일합니다.</p>
+
+    <div class="commandment-grid">
+      <div class="cmd-card">
+        <div class="cmd-num">제1계명</div>
+        <div class="cmd-title">나 외에 다른 신 없음</div>
+        <div class="cmd-desc">유일신 신앙의 선언. 고대 근동에서 매우 독특한 개념</div>
+      </div>
+      <div class="cmd-card">
+        <div class="cmd-num">제2계명</div>
+        <div class="cmd-title">우상 금지</div>
+        <div class="cmd-desc">신을 형상으로 만들지 말 것. 당시 모든 민족이 우상을 숭배했음</div>
+      </div>
+      <div class="cmd-card">
+        <div class="cmd-num">제3계명</div>
+        <div class="cmd-title">하나님 이름 헛되이 말지 말것</div>
+        <div class="cmd-desc">이름에 신성이 깃든다는 고대 개념과 연결</div>
+      </div>
+      <div class="cmd-card">
+        <div class="cmd-num">제4계명</div>
+        <div class="cmd-title">안식일 준수</div>
+        <div class="cmd-desc">7일 주기의 휴식. 사회 약자 보호 목적 포함</div>
+      </div>
+      <div class="cmd-card">
+        <div class="cmd-num">제5계명</div>
+        <div class="cmd-title">부모 공경</div>
+        <div class="cmd-desc">가족 질서와 공동체 안정의 기반</div>
+      </div>
+      <div class="cmd-card">
+        <div class="cmd-num">제6계명</div>
+        <div class="cmd-title">살인하지 말라</div>
+        <div class="cmd-desc">생명의 존엄성. 고대 법전과 유사하나 신학적 근거가 다름</div>
+      </div>
+      <div class="cmd-card">
+        <div class="cmd-num">제7계명</div>
+        <div class="cmd-title">간음하지 말라</div>
+        <div class="cmd-desc">가정 보호. 고대 법전 대부분이 유사 조항 보유</div>
+      </div>
+      <div class="cmd-card">
+        <div class="cmd-num">제8계명</div>
+        <div class="cmd-title">도둑질하지 말라</div>
+        <div class="cmd-desc">재산권 보호. 원래 '사람을 훔치는 것'(납치) 가리킨다는 설도 있음</div>
+      </div>
+      <div class="cmd-card">
+        <div class="cmd-num">제9계명</div>
+        <div class="cmd-title">거짓 증거 금지</div>
+        <div class="cmd-desc">법적 정의 수호. 고대 법정 문화와 직결</div>
+      </div>
+      <div class="cmd-card">
+        <div class="cmd-num">제10계명</div>
+        <div class="cmd-title">탐내지 말라</div>
+        <div class="cmd-desc">행동이 아닌 <span class="hl">마음의 동기</span>까지 규제. 가장 독창적인 계명</div>
+      </div>
+    </div>
+
+    <div class="info-box">
+      <div class="info-title">📌 두 판(版)의 차이</div>
+      <p>출애굽기 20장의 십계명과 신명기 5장의 십계명은 안식일 조항에서 약간 다릅니다. 출애굽기는 <strong>창조 기념</strong>을 이유로, 신명기는 <strong>이집트 종살이 해방 기념</strong>을 이유로 제시합니다. 학자들은 이를 다른 전통이 각각 반영된 것으로 봅니다.</p>
+    </div>
+  </div>
+
+  <!-- 고대 근동의 주요 법전들 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🏛️</span> 고대 근동의 주요 법전들</div>
+    <p>모세 율법 이전에도 메소포타미아에는 이미 정교한 성문 법전들이 존재했습니다. 이 법전들과의 비교는 성경 율법을 이해하는 데 핵심적입니다.</p>
+
+    <div class="law-card">
+      <div class="law-name">🗿 우르남무 법전 (Ur-Nammu Code)</div>
+      <div class="law-date">BC 2100년경 · 수메르</div>
+      <div class="law-desc">현존하는 가장 오래된 성문 법전. 우르 제3왕조의 창시자 우르남무 왕이 제정했습니다. 살인, 강도, 간음, 거짓 증언에 관한 조항을 포함하며 주로 벌금형을 규정합니다. '만약 ~하면, ~한다'는 조건문 형식(casuistic law)을 사용합니다.</div>
+    </div>
+
+    <div class="law-card">
+      <div class="law-name">📜 리핏이쉬타르 법전 (Lipit-Ishtar Code)</div>
+      <div class="law-date">BC 1930년경 · 이신 왕조</div>
+      <div class="law-desc">수메르어로 기록된 두 번째 주요 법전. 토지 소유, 노예 해방, 상속 문제를 다룹니다. "내가 이 법을 세웠으니 공의와 정의가 땅에 흘러넘치게 하라"는 서문은 성경 율법의 정신과 유사합니다.</div>
+    </div>
+
+    <div class="law-card">
+      <div class="law-name">⚖️ 함무라비 법전 (Code of Hammurabi)</div>
+      <div class="law-date">BC 1754년경 · 바빌론</div>
+      <div class="law-desc">282개 조항을 담은 고대 세계 가장 완전한 법전. 높이 2.25m 현무암 비석에 새겨졌으며 현재 파리 루브르박물관 소장. <span class="hl">'눈에는 눈(lex talionis)'</span> 원칙, 임금 체불, 의료 과실, 결혼 계약 등을 다룹니다. 성경의 언약 법전(출 21–23장)과 유사 조항이 50개 이상 발견됩니다.</div>
+    </div>
+
+    <div class="law-card">
+      <div class="law-name">🏺 히타이트 법전 (Hittite Laws)</div>
+      <div class="law-date">BC 1650~1200년경 · 아나톨리아</div>
+      <div class="law-desc">200개 이상의 조항으로 구성. 히타이트 법전은 동물과의 성관계, 마법, 농업 관련 규정 등을 포함하며 시간이 흐름에 따라 형벌이 완화되는 경향을 보입니다. 가나안 정복 시기 이스라엘이 접촉한 문명의 법 전통입니다.</div>
+    </div>
+
+    <div class="law-card">
+      <div class="law-name">📖 앗시리아 중기 법전 (Middle Assyrian Laws)</div>
+      <div class="law-date">BC 1450~1250년경 · 앗시리아</div>
+      <div class="law-desc">여성의 지위, 결혼, 상속, 재산 관련 조항이 풍부합니다. 여성에 대한 엄격한 제한(외출 시 베일 착용 의무 등)이 눈에 띄며, 이스라엘 율법과의 비교 연구에서 자주 인용됩니다.</div>
+    </div>
+  </div>
+
+  <!-- 비교 분석 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🔍</span> 비교 분석 — 공통점과 차이점</div>
+
+    <p>학자들은 성경의 율법을 크게 두 가지 형태로 구분합니다:</p>
+    <p><span class="hl">① 조건법(Casuistic Law):</span> "만약 ~하면 ~하라" 형식. 고대 근동 법전과 공통적. (출 21:2 "히브리 종을 샀으면 6년을 섬기고...")</p>
+    <p><span class="hl">② 절대법(Apodictic Law):</span> "~하라/하지 말라" 형식. 십계명처럼 무조건적 명령. <span class="hl-green">이스라엘 율법만의 독특한 특징</span>으로 고대 근동에서 거의 유례가 없습니다.</p>
+
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>항목</th>
+          <th>함무라비 법전</th>
+          <th>모세 율법 (출 21–23장)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>소(牛)가 사람을 받을 때</strong></td>
+          <td>주인의 과실에 따라 배상 또는 소 몰수</td>
+          <td>비슷하나 소도 돌로 쳐 죽임 (생명 신성 강조)</td>
+        </tr>
+        <tr>
+          <td><strong>눈에는 눈 (동해복수법)</strong></td>
+          <td>동일한 계층 간에만 적용</td>
+          <td>계층 무관 동일 적용 (평등 원칙)</td>
+        </tr>
+        <tr>
+          <td><strong>절도</strong></td>
+          <td>배상액 3~30배, 사형도 가능</td>
+          <td>배상 2~5배, 형편 따라 차등</td>
+        </tr>
+        <tr>
+          <td><strong>노예 처우</strong></td>
+          <td>재산으로 취급, 도주 시 사형</td>
+          <td>7년 후 해방, 심한 학대 시 즉시 자유 (출 21:26)</td>
+        </tr>
+        <tr>
+          <td><strong>권위의 근거</strong></td>
+          <td>왕의 권위 (함무라비가 신에게 위임받음)</td>
+          <td>직접적인 신의 명령 (야훼가 직접 선포)</td>
+        </tr>
+        <tr>
+          <td><strong>가난한 자 보호</strong></td>
+          <td>일부 조항에서 언급</td>
+          <td>반복적·체계적으로 강조 (나그네, 고아, 과부)</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="info-box">
+      <div class="info-title">🔎 학자들의 결론</div>
+      <p>대부분의 구약학자들은 이스라엘이 고대 근동의 법적 전통을 <strong>알고 있었음</strong>을 인정하면서도, 모세 율법이 단순한 '복사본'이 아니라 <strong>신학적으로 재해석된 독창적인 법체계</strong>라고 봅니다. 특히 계층과 신분을 초월한 평등 원칙, 사회 약자 보호, 그리고 마음의 동기까지 규율하는 윤리적 깊이는 당시 어떤 법전에서도 찾아볼 수 없습니다.</p>
+    </div>
+  </div>
+
+  <!-- 가장 독특한 차이점들 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✨</span> 모세 율법이 진짜 달랐던 것들</div>
+
+    <div class="diff-box">
+      <div class="diff-col old">
+        <div class="diff-title">🏛️ 고대 근동 법전들</div>
+        <ul>
+          <li>왕이 법의 원천</li>
+          <li>계층별 다른 처벌</li>
+          <li>노예는 재산에 불과</li>
+          <li>여성과 외국인 권리 미약</li>
+          <li>가난한 자 보호 일부만</li>
+          <li>마음의 동기는 규제 안 함</li>
+        </ul>
+      </div>
+      <div class="diff-col new">
+        <div class="diff-title">📜 모세 율법</div>
+        <ul>
+          <li>하나님이 법의 원천</li>
+          <li>계층 무관 동일한 정의</li>
+          <li>노예도 권리와 해방 보장</li>
+          <li>나그네·과부·고아 반복 보호</li>
+          <li>가난한 자 위한 이삭줍기 허용</li>
+          <li>탐심 자체를 죄로 규정 (제10계명)</li>
+        </ul>
+      </div>
+    </div>
+
+    <p><span class="hl">안식일 법</span>도 혁명적이었습니다. 이집트나 바빌론에는 7일 주기 휴일 개념이 없었습니다. 이스라엘의 안식일은 종도, 이방인도, 심지어 가축도 쉬어야 한다고 명시합니다. 이는 고대 세계에서 전례 없는 사회적 평등 사상이었습니다.</p>
+
+    <div class="quote-box">
+      <div class="quote-text">"일곱째 날은 네 하나님 여호와의 안식일인즉 너나 네 아들이나 네 딸이나 네 남종이나 네 여종이나 네 소나 나귀나 네 모든 가축이나 네 문 안에 유하는 객이라도 아무 일도 하지 말고..."</div>
+      <div class="quote-source">— 신명기 5:14 (안식일 계명 — 모든 존재를 위한 휴식)</div>
+    </div>
+  </div>
+
+  <!-- 언약 법전 구조 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">📖</span> 율법의 구조 — 큰 그림</div>
+    <p>모세 율법은 십계명만이 아닙니다. 성경학자들은 이를 크게 세 층위로 구분합니다:</p>
+
+    <div class="law-card">
+      <div class="law-name">① 언약 법전 (Book of the Covenant)</div>
+      <div class="law-date">출애굽기 20:22 – 23:33</div>
+      <div class="law-desc">가장 오래된 법 모음으로 추정. 노예법, 상해법, 재산법, 절기법 등 구체적인 사회 규정을 담습니다. 함무라비 법전과의 유사점이 가장 많이 발견되는 부분입니다.</div>
+    </div>
+
+    <div class="law-card">
+      <div class="law-name">② 신성 법전 (Holiness Code)</div>
+      <div class="law-date">레위기 17–26장</div>
+      <div class="law-desc">"너희는 거룩하라. 나 여호와 너희 하나님이 거룩함이니라" (레 19:2). 제사 규정, 성적 윤리, 음식법, 절기 등 이스라엘의 성별된 정체성을 규정합니다. 히타이트 법전과 일부 유사성이 있습니다.</div>
+    </div>
+
+    <div class="law-card">
+      <div class="law-name">③ 신명기 법전 (Deuteronomic Code)</div>
+      <div class="law-date">신명기 12–26장</div>
+      <div class="law-desc">언약 법전을 업데이트한 형태. 예배 중앙화, 왕권 제한, 사회 정의 강조가 두드러집니다. BC 621년 요시야 왕 시대에 성전에서 발견된 '율법책'이 이 부분이라는 설이 유력합니다 (내일 이야기).</div>
+    </div>
+  </div>
+
+  <!-- 왜 중요한가 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">💡</span> 왜 이것이 중요한가?</div>
+    <p>모세 율법은 단순한 법전이 아닙니다. 이것은 <span class="hl">이스라엘의 정체성 헌장</span>이었습니다. "우리는 누구인가? 우리의 하나님은 어떤 분인가? 우리는 어떻게 살아야 하는가?"에 대한 총체적인 답을 담고 있습니다.</p>
+    <p>함무라비가 법을 제정한 것은 왕으로서의 업적을 과시하기 위해서였습니다. 그러나 모세 율법은 출애굽이라는 구원 사건 <span class="hl-green">이후에</span> 주어집니다. 이집트에서 해방시켜 주셨기 <span class="hl">때문에</span> 이 언약을 지켜야 한다는 논리입니다. 순종이 구원의 조건이 아니라, 구원받은 자의 감사한 응답인 것입니다.</p>
+    <p>이 구조는 이후 신약의 은혜와 행위의 관계에도 그대로 이어집니다. 바울이 로마서에서 논하는 "은혜로 구원받은 후 어떻게 살 것인가"의 문제는 이미 시나이 산에서 시작된 주제였습니다.</p>
+
+    <div class="info-box">
+      <div class="info-title">🧪 고고학적 메모</div>
+      <p>시나이 광야에서 십계명이 새겨진 돌판 자체는 아직 발견되지 않았습니다. 그러나 BC 15~13세기 이집트 문서들(파피루스 아나스타시 I 등)에 시나이 지역 도로, 요새, 물 공급 시스템에 대한 상세한 기록이 있어 당시 그 지역에 대규모 이동이 가능했음을 보여줍니다. 또한 BC 13세기 메르넵타 비석(Merneptah Stele)에는 "이스라엘은 황폐하고 씨가 말랐다"는 기록이 있어, 이 시기 이스라엘이 이미 가나안에 존재했음을 확인해줍니다.</p>
+    </div>
+  </div>
+
+  <!-- 내일 예고 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🔭</span> 내일 예고 — 15일차</div>
+    <p><span class="hl">가나안 정복 — 여호수아와 고고학적 증거</span></p>
+    <p>40년 광야 방랑이 끝나고 이스라엘은 드디어 약속의 땅 가나안으로 진입합니다. 여리고 성벽은 정말 무너졌을까요? 고고학은 무엇을 말하고 있을까요? AI 하솔과 라기스의 발굴 이야기도 함께 살펴봅니다.</p>
+  </div>
+
+  <!-- 오늘의 묵상 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🙏</span> 오늘의 묵상</div>
+    <div class="quote-box">
+      <div class="quote-text">"율법은 죄를 인식하게 하려 주어진 것이 아니라, 이미 구원받은 백성에게 어떻게 살지를 알려주기 위해 주어진 것이다. 시나이 산의 율법은 목적지가 아니라 여정의 안내서였다."</div>
+      <div class="quote-source">— 구약신학자 크리스토퍼 라이트(Christopher Wright) 요약</div>
+    </div>
+    <p style="margin-top:8px; font-size:13px; color:#7a6a4a;">오늘 읽을 성경: 출애굽기 20:1–17, 신명기 5:1–21</p>
+  </div>
+
+  <div class="footer">
+    <p>📜 50일 성경 역사 · 14일차 / 50일</p>
+    <p style="margin-top:4px;">고대의 돌 위에 새겨진 법이 오늘도 살아 있습니다</p>
+  </div>
+
+</div>
+</body>
+</html>
