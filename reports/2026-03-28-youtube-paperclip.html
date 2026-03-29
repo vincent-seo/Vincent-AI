@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Paperclip: AI 에이전트를 직원처럼 고용하라</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif; background: #f0fdf4; color: #1a2e1a; line-height: 1.8; }
+
+    .hero {
+      background: linear-gradient(135deg, #059669 0%, #047857 100%);
+      color: white;
+      padding: 48px 24px 36px;
+      text-align: center;
+    }
+    .hero-badge { display: inline-block; background: rgba(255,255,255,0.2); border-radius: 20px; padding: 6px 18px; font-size: 13px; margin-bottom: 16px; letter-spacing: 1px; }
+    .hero h1 { font-size: clamp(22px, 5vw, 34px); font-weight: 800; margin-bottom: 12px; text-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+    .hero-sub { font-size: 15px; opacity: 0.88; margin-bottom: 24px; }
+    .hero-meta { display: flex; justify-content: center; flex-wrap: wrap; gap: 16px; font-size: 13px; opacity: 0.82; }
+    .hero-meta span { display: flex; align-items: center; gap: 6px; }
+
+    .container { max-width: 800px; margin: 0 auto; padding: 24px 16px 60px; }
+
+    .summary-card {
+      background: white;
+      border-radius: 16px;
+      padding: 28px 24px;
+      margin-bottom: 32px;
+      border-left: 5px solid #059669;
+      box-shadow: 0 4px 20px rgba(5, 150, 105, 0.08);
+    }
+    .summary-card h2 { font-size: 17px; color: #047857; margin-bottom: 12px; }
+    .summary-card p { font-size: 15px; color: #374151; font-style: italic; line-height: 1.7; }
+
+    .section { margin-bottom: 40px; }
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #d1fae5;
+    }
+    .section-icon { font-size: 24px; }
+    .section-header h2 { font-size: clamp(17px, 3.5vw, 21px); font-weight: 700; color: #065f46; }
+
+    .section p { font-size: 15px; color: #374151; margin-bottom: 16px; line-height: 1.85; }
+    .section p:last-child { margin-bottom: 0; }
+
+    .highlight-box {
+      background: #ecfdf5;
+      border: 1px solid #a7f3d0;
+      border-radius: 12px;
+      padding: 18px 20px;
+      margin: 20px 0;
+    }
+    .highlight-box .label { font-size: 11px; font-weight: 700; color: #059669; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
+    .highlight-box p { margin-bottom: 0; color: #065f46; font-size: 14px; }
+
+    .quote-box {
+      background: #f0fdf4;
+      border-left: 4px solid #059669;
+      padding: 16px 20px;
+      border-radius: 0 10px 10px 0;
+      margin: 20px 0;
+    }
+    .quote-box p { color: #047857; font-style: italic; font-size: 15px; margin: 0; }
+    .quote-box .author { font-size: 12px; color: #6b7280; margin-top: 8px; font-style: normal; }
+
+    .problem-solve {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin: 20px 0;
+    }
+    @media (max-width: 520px) { .problem-solve { grid-template-columns: 1fr; } }
+    .problem-card { background: #fff7ed; border: 1px solid #fed7aa; border-radius: 12px; padding: 16px; }
+    .problem-card.solve { background: #ecfdf5; border-color: #a7f3d0; }
+    .problem-card .card-title { font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 10px; color: #ea580c; }
+    .problem-card.solve .card-title { color: #059669; }
+    .problem-card ul { padding-left: 18px; font-size: 14px; color: #374151; }
+    .problem-card ul li { margin-bottom: 6px; }
+
+    .spectrum {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      margin: 20px 0;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+      overflow-x: auto;
+    }
+    .spectrum-item { text-align: center; min-width: 100px; }
+    .spectrum-item .name { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+    .spectrum-item .desc { font-size: 11px; color: #6b7280; }
+    .spectrum-arrow { font-size: 20px; color: #d1d5db; flex-shrink: 0; }
+    .spectrum-item.active .name { color: #059669; }
+    .spectrum-item.active { border: 2px solid #059669; border-radius: 8px; padding: 8px; }
+
+    .steps-list { counter-reset: steps; }
+    .step-item {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 18px;
+      align-items: flex-start;
+    }
+    .step-num {
+      background: #059669;
+      color: white;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .step-content .step-title { font-weight: 700; color: #065f46; margin-bottom: 4px; font-size: 15px; }
+    .step-content .step-desc { font-size: 14px; color: #374151; }
+
+    .memento-box {
+      background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+      color: white;
+      border-radius: 16px;
+      padding: 28px 24px;
+      margin: 24px 0;
+    }
+    .memento-box h3 { font-size: 18px; margin-bottom: 12px; color: #a7f3d0; }
+    .memento-box p { font-size: 14px; opacity: 0.9; line-height: 1.75; margin-bottom: 12px; }
+    .memento-box p:last-child { margin-bottom: 0; }
+
+    .heartbeat-list { margin-top: 16px; }
+    .heartbeat-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 8px;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .heartbeat-item .num { background: #059669; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; flex-shrink: 0; }
+
+    .org-chart {
+      background: white;
+      border-radius: 14px;
+      padding: 24px;
+      margin: 20px 0;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+    .org-ceo { text-align: center; margin-bottom: 20px; }
+    .org-badge { display: inline-block; padding: 8px 20px; border-radius: 20px; font-weight: 700; font-size: 14px; }
+    .badge-ceo { background: #059669; color: white; }
+    .badge-senior { background: #d1fae5; color: #065f46; }
+    .badge-worker { background: #f0fdf4; color: #374151; border: 1px solid #a7f3d0; }
+    .org-row { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 12px; }
+    .org-arrow { text-align: center; color: #d1d5db; font-size: 20px; margin-bottom: 8px; }
+
+    .use-cases {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 14px;
+      margin: 20px 0;
+    }
+    .use-case-card {
+      background: white;
+      border-radius: 12px;
+      padding: 16px;
+      border: 1px solid #d1fae5;
+      text-align: center;
+    }
+    .use-case-card .icon { font-size: 28px; margin-bottom: 8px; }
+    .use-case-card .title { font-size: 13px; font-weight: 700; color: #065f46; margin-bottom: 4px; }
+    .use-case-card .desc { font-size: 12px; color: #6b7280; }
+
+    .future-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin: 20px 0;
+    }
+    @media (max-width: 520px) { .future-grid { grid-template-columns: 1fr; } }
+    .future-card {
+      background: white;
+      border-radius: 12px;
+      padding: 18px;
+      border-top: 3px solid #059669;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    .future-card .tag { font-size: 11px; color: #059669; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
+    .future-card h3 { font-size: 15px; font-weight: 700; color: #1f2937; margin-bottom: 8px; }
+    .future-card p { font-size: 13px; color: #6b7280; }
+
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 16px;
+      margin: 20px 0;
+    }
+    .team-card {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    .team-card .avatar { font-size: 36px; margin-bottom: 8px; }
+    .team-card .name { font-weight: 700; color: #065f46; margin-bottom: 4px; }
+    .team-card .role { font-size: 12px; color: #6b7280; }
+
+    .closing-box {
+      background: linear-gradient(135deg, #059669 0%, #047857 100%);
+      color: white;
+      border-radius: 16px;
+      padding: 32px 24px;
+      text-align: center;
+      margin-top: 40px;
+    }
+    .closing-box h3 { font-size: 18px; margin-bottom: 14px; }
+    .closing-box p { font-size: 15px; opacity: 0.9; line-height: 1.8; }
+
+    .footer { text-align: center; padding: 24px; color: #9ca3af; font-size: 12px; }
+  </style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">🔧 기술/가이드 리뷰</div>
+  <h1>Paperclip: AI 에이전트를<br>직원처럼 고용하라</h1>
+  <div class="hero-sub">Hire AI Agents Like Employees (Live Demo)</div>
+  <div class="hero-meta">
+    <span>📅 2026-03-28</span>
+    <span>⏱️ 약 46분</span>
+    <span>🎙️ Dota (Paperclip 창업자)</span>
+    <span>⭐ GitHub 30,000 stars</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="summary-card">
+    <h2>📌 한 줄 요약</h2>
+    <p>Paperclip은 AI 에이전트를 직원처럼 고용하고, 조직처럼 구조화하고, 이사회처럼 관리할 수 있게 해주는 오픈소스 에이전트 오케스트레이터다. 3주 만에 GitHub 스타 3만 개 — 그 이면에는 "무슨 일이 일어나는지 모른 채 예산을 날린" 창업자의 진짜 경험이 있다.</p>
+  </div>
+
+  <!-- SECTION 1 -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">🚀</span>
+      <h2>3주 만에 GitHub 스타 3만 개 — 무슨 일이 일어난 걸까?</h2>
+    </div>
+    <p>2026년 초, AI 개발자 커뮤니티에 한 오픈소스 프로젝트가 등장해 폭발적인 반응을 얻었다. 이름은 <strong>Paperclip</strong>. 출시 단 3주 만에 GitHub 스타 30,000개를 달성하며 화제가 됐고, 진행자 Greg는 창업자 Dota를 팟캐스트에 초청했다. 이번 영상은 Dota가 처음으로 공개석상에서 제품 사용법을 직접 시연하는 자리였다.</p>
+    <p>그런데 Dota는 화면에 얼굴 대신 <strong>아바타</strong>로 등장했다. 이유를 묻자 그는 웃으며 설명했다. 자신은 Paperclip 이전에 NFT 프로젝트를 하면서 "Dota"라는 온라인 페르소나를 써왔고, Naval Ravikant가 말한 "유명하지만 아무도 당신을 모르는 것이 최고의 결과"라는 철학에 공감한다고.</p>
+  </div>
+
+  <!-- SECTION 2 -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">😰</span>
+      <h2>Paperclip이 해결하려는 문제 — 20개의 창, 아무것도 모르는 나</h2>
+    </div>
+    <p>Dota가 Paperclip을 만들게 된 계기는 지극히 개인적인 경험에서 시작됐다. 그는 Claude Code를 이용해 여러 프로젝트를 동시에 개발하다가, 어느 순간 창을 20~30개씩 열어두고 일을 시키는 자신을 발견했다. 주말 내내 에이전트를 돌려두고 월요일 아침에 돌아와보면...</p>
+
+    <div class="problem-solve">
+      <div class="problem-card">
+        <div class="card-title">❌ 문제들</div>
+        <ul>
+          <li>뭘 하라고 했는지 기억 안 남</li>
+          <li>토큰 예산 전부 소진</li>
+          <li>실제 결과물이 뭔지 모름</li>
+          <li>어느 창에서 뭐가 진행 중인지 불명</li>
+        </ul>
+      </div>
+      <div class="problem-card solve">
+        <div class="card-title">✅ Paperclip의 해결책</div>
+        <ul>
+          <li>모든 작업을 이슈로 추적</li>
+          <li>월간 토큰 사용량 대시보드</li>
+          <li>에이전트별 성과 기록</li>
+          <li>한 태스크 = 한 에이전트 충돌 방지</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 3 -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">⚖️</span>
+      <h2>Paperclip의 포지셔닝 — Pulsea와 Cursor 사이</h2>
+    </div>
+    <p>AI 자동화 도구는 스펙트럼이 있다. Paperclip은 그 중간 어딘가를 겨냥한다.</p>
+
+    <div class="spectrum">
+      <div class="spectrum-item">
+        <div class="name">Pulsea</div>
+        <div class="desc">완전 자동화<br>"신용카드만 줘"</div>
+      </div>
+      <div class="spectrum-arrow">→</div>
+      <div class="spectrum-item active">
+        <div class="name">📎 Paperclip</div>
+        <div class="desc">목표 관리<br>"이사회 역할"</div>
+      </div>
+      <div class="spectrum-arrow">→</div>
+      <div class="spectrum-item">
+        <div class="name">Cursor</div>
+        <div class="desc">완전 수동<br>"PR 하나하나 관리"</div>
+      </div>
+    </div>
+
+    <div class="highlight-box">
+      <div class="label">💡 핵심 철학: Bring Your Own Bot (BYOB)</div>
+      <p>Cursor Cloud, OpenClaw, Claude CLI, Codex 등 자신이 이미 쓰는 AI 에이전트를 그대로 연결. 특정 모델에 종속되지 않는다.</p>
+    </div>
+  </div>
+
+  <!-- SECTION 4: LIVE DEMO -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">🔴</span>
+      <h2>라이브 데모 — "Moolah" 회사를 창업해보자</h2>
+    </div>
+    <p>데모에서 Greg와 Dota는 아이디어 브라우저에서 케이스 스터디를 골랐다. 후보는 두 가지 — "하루 3분 돈 습관 금융 앱" vs "항공권 보상 회수 에이전트." 결국 금융 앱 선택, 이름은 <strong>Moolah</strong>.</p>
+
+    <div class="steps-list">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-title">회사 이름 + 목표 입력</div>
+          <div class="step-desc">아이디어 브라우저에서 설명을 복사해 붙여넣기</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-title">첫 에이전트 설정 (CEO)</div>
+          <div class="step-desc">프론티어 모델 추천 (Claude Opus). OpenRouter 무료 모델도 활용 가능</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <div class="step-title">첫 과제: 창업 엔지니어 고용 + 채용 계획 수립</div>
+          <div class="step-desc">CEO가 방향 설정 → 로드맵 → 구체 태스크로 분해</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <div class="step-title">이슈 대시보드 확인</div>
+          <div class="step-desc">CI 설정, 사용자 인증, 핵심 루프 구현 등 이슈 자동 생성</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="quote-box">
+      <p>"이사회로 생각하세요. CEO에게 높은 수준의 목표를 주고, 달성하고 싶은 MRR을 알려주고 — 계획 수립은 에이전트가 합니다."</p>
+      <div class="author">— Dota</div>
+    </div>
+  </div>
+
+  <!-- SECTION 5: MEMENTO -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">🧠</span>
+      <h2>Memento Man — AI 에이전트를 이해하는 최고의 비유</h2>
+    </div>
+    <p>Paperclip 사용에서 가장 중요한 개념을 설명할 때, Dota는 영화 <strong>메멘토(Memento)</strong>를 끌어왔다.</p>
+
+    <div class="memento-box">
+      <h3>🎬 메멘토의 주인공처럼...</h3>
+      <p>메멘토의 주인공은 매일 아침 기억을 잃고 깨어난다. <strong>싸울 줄 알고, 운전할 줄 알고, 돈 쓸 줄도 안다.</strong> 하지만 자신이 누구인지, 어디 있는지, 오늘 뭘 해야 하는지는 전혀 모른다. 그래서 몸에 문신을 새기고, 폴라로이드 사진에 메모를 남긴다.</p>
+      <p>AI 에이전트도 똑같다. 코딩할 줄 알고, 리서치할 줄 알고, 돈을 쓸 줄도 안다. 하지만 매번 "깨어날" 때마다 — 이 회사에서 내 역할이 뭔지, 지금 무슨 프로젝트인지, 무엇을 우선해야 하는지 — 모른다.</p>
+      <div class="heartbeat-list">
+        <div class="heartbeat-item"><div class="num">1</div> 자신이 누구인지 파악 (페르소나 및 역할 확인)</div>
+        <div class="heartbeat-item"><div class="num">2</div> 오늘의 계획 읽기</div>
+        <div class="heartbeat-item"><div class="num">3</div> 할당된 과제 확인</div>
+        <div class="heartbeat-item"><div class="num">4</div> 과제를 구체적 태스크로 분해</div>
+        <div class="heartbeat-item"><div class="num">5</div> 메모리 추출 및 저장</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 6: SKILLS -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">🔧</span>
+      <h2>Skills 시스템 — 에이전트에게 새로운 능력 부여</h2>
+    </div>
+    <p>Paperclip의 또 다른 강점은 <strong>Skills 시스템</strong>이다. 외부 스킬을 에이전트에게 장착할 수 있다. 가장 인기 있는 마켓플레이스는 <strong>skills.sh</strong>. URL만 복사해서 Paperclip에 붙여넣으면 설치 완료.</p>
+
+    <div class="highlight-box">
+      <div class="label">🎥 Remotion 스킬 설치 예시</div>
+      <p>영상 편집 에이전트에게 Remotion 스킬을 장착 → 이제 그 에이전트는 React 기반 애니메이션 영상을 만들 수 있다. CEO에게 "Remotion 스킬 추가해"라고 말해도 자동으로 처리된다.</p>
+    </div>
+
+    <div class="quote-box">
+      <p>"OpenClaw는 정말 강력하고 아름다운 소프트웨어예요. 인터넷을 강타하고 있죠. ChatGPT가 AI가 말할 수 있다는 걸 보여줬다면, OpenClaw는 AI가 당신을 대신해 행동할 수 있다는 걸 처음 보여줬어요. 그 다음 단계가 Paperclip입니다."</p>
+      <div class="author">— Dota</div>
+    </div>
+  </div>
+
+  <!-- SECTION 7: TASTE -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">🎨</span>
+      <h2>가장 중요한 것 — 컨텍스트와 취향(Taste)</h2>
+    </div>
+    <p>Greg가 핵심을 찌르는 질문을 했다. "Remotion 스킬을 써봤는데 컨텍스트를 많이 줄수록 결과가 좋더라고요. 상위 1% 수준의 영상 에이전트를 만들려면?" Dota의 답은 단호했다.</p>
+
+    <div class="quote-box">
+      <p>"Paperclip이 그 컨텍스트를 대신 써줄 수는 없어요. 결국 창업자가 제공해야 합니다. AI가 못하는 게 있다면, 바로 <strong>가치관과 취향</strong>이에요. GPT 5.4나 Opus 4.6도 마찬가지예요. 당신의 취향을 완전히 대신할 수는 없어요."</p>
+      <div class="author">— Dota</div>
+    </div>
+
+    <p>Greg가 덧붙였다. "그리고 그건 사실 AI 이전에도 마찬가지였어요. 좋은 리더, 좋은 CEO의 조건이 바로 자신의 가치관을 명확히 전달할 수 있는 사람이잖아요. 달라진 건 그 수단뿐이에요. 직원 대신 에이전트를 고용하는 거죠."</p>
+  </div>
+
+  <!-- SECTION 8: ORG CHART -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">🏗️</span>
+      <h2>Paperclip 팀 구조 — 자기 자신을 위해 쓰는 도구</h2>
+    </div>
+    <p>Paperclip 자체를 Paperclip으로 개발한다. 현재 운영 중인 에이전트 팀:</p>
+
+    <div class="org-chart">
+      <div class="org-ceo">
+        <span class="org-badge badge-ceo">👑 CEO</span>
+      </div>
+      <div class="org-arrow">↓</div>
+      <div class="org-row">
+        <span class="org-badge badge-senior">📊 CMO</span>
+        <span class="org-badge badge-senior">🎨 UX Designer</span>
+        <span class="org-badge badge-senior">⚙️ CTO</span>
+      </div>
+      <div class="org-arrow">↓</div>
+      <div class="org-row">
+        <span class="org-badge badge-worker">💻 Cursor Coder</span>
+        <span class="org-badge badge-worker">🤖 Claude Coder</span>
+        <span class="org-badge badge-worker">🔍 QA Engineer</span>
+        <span class="org-badge badge-worker">📈 Evals Engineer</span>
+        <span class="org-badge badge-worker">✍️ Content Strategist</span>
+      </div>
+    </div>
+
+    <p><strong>QA Engineer</strong>는 Claude Browser + Agent Browser 스킬을 장착해, 개발 완료 후 실제로 버튼을 눌러보고 스크린샷과 함께 검증한다. 일반 Chrome 창 방식보다 훨씬 빠르다.</p>
+    <p><strong>Evals Engineer</strong>는 새로 신설된 역할. 에이전트들이 반복적으로 같은 실수를 하는 패턴을 분석하고, Paperclip이 이를 자동으로 학습해 개선할 수 있도록 도구를 개발 중이다.</p>
+  </div>
+
+  <!-- SECTION 9: ROUTINES -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">🔄</span>
+      <h2>Routines — 반복 작업을 에이전트에게 맡기기</h2>
+    </div>
+    <p>새로 추가된 <strong>Routines 기능</strong>은 일종의 "반복 이슈 템플릿"이다. 실제 예시: 매일 GitHub에 머지된 PR들을 읽어서 Discord에 업데이트를 자동 포스팅.</p>
+
+    <div class="highlight-box">
+      <div class="label">📋 Discord 업데이트 루틴 설정</div>
+      <p>① 매일 오전 10시 트리거 → ② GitHub 최근 24시간 변경사항 읽기 → ③ 커뮤니티 포맷으로 작성 → ④ 기여자 한 명씩 언급 및 감사 → ⑤ Discord 채널 포스팅. 주말엔 내용 없으면 패스.</p>
+    </div>
+
+    <p>Routines의 강점은 단순 크론 잡이 아니라는 점이다. 매번 실행될 때마다 별도 이슈로 기록돼 — 에이전트가 무슨 작업을 했는지, 토큰을 얼마나 썼는지, 결과가 어땠는지 — 모두 추적하고 나중에 개선할 수 있다.</p>
+  </div>
+
+  <!-- SECTION 10: SHAREABLE -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">🌐</span>
+      <h2>Shareable Companies — 검증된 팀을 통째로 가져오다</h2>
+    </div>
+    <p>가장 흥미로운 기능: <strong>Companies Import/Export</strong>. 누군가가 잘 동작하는 에이전트 팀을 만들었다면 그걸 그대로 불러올 수 있다.</p>
+
+    <div class="use-cases">
+      <div class="use-case-card">
+        <div class="icon">🧑‍💼</div>
+        <div class="title">Gary Tan's G Stack</div>
+        <div class="desc">Office Hours 스타일, 엔지니어링 에이전트 팀</div>
+      </div>
+      <div class="use-case-card">
+        <div class="icon">⚡</div>
+        <div class="title">Agency Agents Repo</div>
+        <div class="desc">GitHub 6만 스타, 100개+ 에이전트 한 번에 임포트</div>
+      </div>
+      <div class="use-case-card">
+        <div class="icon">🎮</div>
+        <div class="title">Don Cheetos Game Studio</div>
+        <div class="desc">창의 감독·프로듀서·테크 디렉터. Bullet Hell 게임 제작 시도</div>
+      </div>
+    </div>
+
+    <div class="quote-box">
+      <p>"이전에는 이런 에이전트 레포들을 실제 조직에 넣어서 테스트할 런타임 자체가 없었어요. Paperclip이 처음으로 그 런타임을 제공하는 겁니다."</p>
+      <div class="author">— Dota</div>
+    </div>
+
+    <p>임포트 시 스킬들이 복사되는 게 아니라 <strong>원격 레포를 참조</strong>한다. 원본이 업데이트되면 업데이트를 확인해 반영할 수 있다.</p>
+  </div>
+
+  <!-- SECTION 11: FUTURE -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">🔭</span>
+      <h2>앞으로의 Paperclip — 다가오는 기능들</h2>
+    </div>
+
+    <div class="future-grid">
+      <div class="future-card">
+        <div class="tag">🚀 곧 출시</div>
+        <h3>Maximizer Mode</h3>
+        <p>토큰 비용 무관하게 목표 달성까지 CEO가 자율적으로 팀을 구성하고 작업을 멈추지 않는 모드</p>
+      </div>
+      <div class="future-card">
+        <div class="tag">🚀 곧 출시</div>
+        <h3>CEO Chat</h3>
+        <p>이슈 생성 없이 어떤 에이전트와도 직접 채팅 가능. 더 자연스러운 인터랙션</p>
+      </div>
+      <div class="future-card">
+        <div class="tag">📋 개발 중</div>
+        <h3>Evals 도구</h3>
+        <p>에이전트 성과 리뷰. 반복되는 피드백을 학습해 같은 실수 반복 방지</p>
+      </div>
+      <div class="future-card">
+        <div class="tag">☁️ 예정</div>
+        <h3>클라우드 호스팅</h3>
+        <p>현재는 로컬 실행이 주. 자체 호스팅 또는 managed 솔루션 제공 예정</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 12: TEAM -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">👥</span>
+      <h2>팀 소개 — 아바타 뒤의 검증된 창업자들</h2>
+    </div>
+
+    <div class="team-grid">
+      <div class="team-card">
+        <div class="avatar">🎭</div>
+        <div class="name">Dota</div>
+        <div class="role">창업자. NFT 배경, AI 에이전트 오케스트레이션에 꽂힌 개발자. Naval 철학 신봉자.</div>
+      </div>
+      <div class="team-card">
+        <div class="avatar">🏗️</div>
+        <div class="name">Devin Foley</div>
+        <div class="role">공동창업자. Slack 초창기 멤버, Figma 초창기. Greg의 전 회사에 투자하기도 한 업계 신뢰 인물.</div>
+      </div>
+      <div class="team-card">
+        <div class="avatar">🎨</div>
+        <div class="name">Scott Tong</div>
+        <div class="role">공동창업자. Pinterest 제품 디자인 총괄 출신. 디자인 방향 담당.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CLOSING -->
+  <div class="closing-box">
+    <h3>🌱 AI가 일자리를 가져가도, 관리 도구는 필요하다</h3>
+    <p>"AI 모델이 발전해 많은 일자리를 대체하더라도, 남겨진 일자리들을 관리하는 소프트웨어는 여전히 필요해요. 10명의 엔지니어 대신 100개의 AI 에이전트를 관리하게 될 때 — 그 에이전트들에게 방향과 취향과 책임을 부여하는 레이어가 Paperclip입니다. 내가 무엇을 원하는지는 변하지 않아요."</p>
+  </div>
+
+</div>
+
+<div class="footer">
+  📎 Paperclip 분석 | 서봇 🌙 | 2026-03-28
+</div>
+
+</body>
+</html>
