@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>재무제표 - 2026 회계연도</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Noto Sans KR', sans-serif; background: #f0f2f5; color: #1a1a2e; padding: 20px; }
+  .container { max-width: 1200px; margin: 0 auto; }
+  .header { text-align: center; padding: 40px 20px; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); color: white; border-radius: 16px; margin-bottom: 30px; box-shadow: 0 8px 32px rgba(0,0,0,0.15); }
+  .header h1 { font-size: 2em; font-weight: 700; margin-bottom: 8px; }
+  .header .subtitle { font-size: 1.1em; opacity: 0.85; font-weight: 300; }
+  .summary-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 30px; }
+  .card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); transition: transform 0.2s; }
+  .card:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+  .card .label { font-size: 0.8em; color: #666; margin-bottom: 6px; font-weight: 500; }
+  .card .value { font-size: 1.5em; font-weight: 700; }
+  .card .sub { font-size: 0.75em; color: #888; margin-top: 4px; }
+  .income { color: #2563eb; } .expense { color: #dc2626; } .surplus { color: #16a34a; } .deficit { color: #dc2626; }
+  .section { background: white; border-radius: 12px; margin-bottom: 24px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+  .section-title { padding: 16px 24px; font-size: 1.15em; font-weight: 600; border-bottom: 2px solid #f0f2f5; }
+  .section-title.income-bg { background: linear-gradient(90deg, #eff6ff, #fff); color: #1e40af; border-left: 4px solid #2563eb; }
+  .section-title.expense-bg { background: linear-gradient(90deg, #fef2f2, #fff); color: #991b1b; border-left: 4px solid #dc2626; }
+  .section-title.result-bg { background: linear-gradient(90deg, #f0fdf4, #fff); color: #166534; border-left: 4px solid #16a34a; }
+  .section-title.att-bg { background: linear-gradient(90deg, #faf5ff, #fff); color: #6b21a8; border-left: 4px solid #8b5cf6; }
+  .section-title.bank-bg { background: linear-gradient(90deg, #fffbeb, #fff); color: #92400e; border-left: 4px solid #f59e0b; }
+  table { width: 100%; border-collapse: collapse; }
+  thead th { background: #f8fafc; padding: 12px 16px; text-align: right; font-weight: 600; font-size: 0.85em; color: #475569; border-bottom: 2px solid #e2e8f0; position: sticky; top: 0; }
+  thead th:first-child { text-align: left; padding-left: 24px; }
+  thead th:last-child { padding-right: 24px; }
+  tbody td { padding: 10px 16px; text-align: right; font-size: 0.9em; border-bottom: 1px solid #f1f5f9; font-variant-numeric: tabular-nums; }
+  tbody td:first-child { text-align: left; padding-left: 24px; }
+  tbody td:last-child { padding-right: 24px; }
+  tr.category-row { background: #f8fafc; }
+  tr.category-row td { font-weight: 600; padding-top: 14px; padding-bottom: 14px; color: #1e293b; border-bottom: 1px solid #e2e8f0; }
+  tr.sub-row td:first-child { padding-left: 48px; color: #475569; }
+  tr.grand-total-row { background: #1e293b; }
+  tr.grand-total-row td { font-weight: 700; color: white; padding: 16px; font-size: 1em; border: none; }
+  .bar-chart { padding: 20px 24px; }
+  .bar-row { display: flex; align-items: center; margin-bottom: 12px; }
+  .bar-label { width: 60px; font-size: 0.85em; font-weight: 500; color: #475569; }
+  .bar-container { flex: 1; display: flex; gap: 4px; height: 28px; }
+  .bar { border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 0.75em; font-weight: 600; color: white; min-width: 40px; }
+  .bar.income-bar { background: #3b82f6; } .bar.expense-bar { background: #ef4444; }
+  .bank-highlight { background: linear-gradient(135deg, #fef3c7, #fffbeb); border: 2px solid #f59e0b; border-radius: 16px; padding: 30px; text-align: center; margin: 24px 0; }
+  .bank-highlight .amount { font-size: 2.2em; font-weight: 800; color: #d97706; }
+  .footer { text-align: center; padding: 20px; color: #94a3b8; font-size: 0.8em; }
+  /* Table wrapper for horizontal scroll on mobile */
+  .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .table-wrap table { min-width: 600px; }
+
+  @media (max-width: 768px) {
+    body { padding: 8px; }
+    .header { padding: 24px 12px; margin-bottom: 16px; border-radius: 12px; }
+    .header h1 { font-size: 1.3em; }
+    .header .subtitle { font-size: 0.85em; }
+    .summary-cards { grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 16px; }
+    .card { padding: 14px; border-radius: 10px; }
+    .card .value { font-size: 1.1em; }
+    .card .label { font-size: 0.7em; }
+    .card .sub { font-size: 0.65em; }
+    .section { margin-bottom: 16px; border-radius: 10px; }
+    .section-title { padding: 12px 14px; font-size: 0.95em; }
+    thead th { padding: 8px 8px; font-size: 0.72em; white-space: nowrap; }
+    thead th:first-child { padding-left: 12px; }
+    tbody td { padding: 8px 8px; font-size: 0.75em; white-space: nowrap; }
+    tbody td:first-child { padding-left: 12px; }
+    tr.sub-row td:first-child { padding-left: 24px; }
+    tr.grand-total-row td { padding: 12px 8px; font-size: 0.85em; }
+    tr.category-row td { padding-top: 10px; padding-bottom: 10px; font-size: 0.8em; }
+    .bar-chart { padding: 12px 14px; }
+    .bar-label { width: 40px; font-size: 0.75em; }
+    .bar { font-size: 0.6em; min-width: 30px; }
+    .bar-container { height: 22px; }
+    .bank-highlight { padding: 20px 12px; margin: 16px 0; }
+    .bank-highlight .amount { font-size: 1.6em; }
+    .footer { padding: 12px; font-size: 0.7em; }
+  }
+
+  @media (max-width: 400px) {
+    .summary-cards { grid-template-columns: 1fr; }
+    .card .value { font-size: 1em; }
+    .header h1 { font-size: 1.1em; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="header">
+  <h1>재무제표</h1>
+  <div class="subtitle">2026 회계연도 (2025년 12월 ~ 2026년 3월)</div>
+</div>
+
+<div class="summary-cards">
+  <div class="card"><div class="label">총 수입 (12~2월 XLS)</div><div class="value income">RM 332,263.10</div><div class="sub">예산 RM 1,606,000 대비 20.7%</div></div>
+  <div class="card"><div class="label">총 지출 (12~2월 XLS)</div><div class="value expense">RM 308,102.88</div><div class="sub">예산 RM 1,531,400 대비 20.1%</div></div>
+  <div class="card"><div class="label">3월 총 헌금</div><div class="value income">RM 88,200.91</div><div class="sub">스크린샷 기준 (1~5주차)</div></div>
+  <div class="card"><div class="label">3월 총 지출</div><div class="value expense">RM 86,448.83</div><div class="sub">스크린샷 기준</div></div>
+  <div class="card"><div class="label">현재 은행 잔고</div><div class="value" style="color:#d97706;">RM 27,533.33</div><div class="sub">2026-03-29 기준</div></div>
+</div>
+
+<!-- Bank Balance Highlight -->
+<div class="bank-highlight">
+  <div style="font-size:0.9em;color:#92400e;margin-bottom:8px;font-weight:500;">현재 시점 은행 잔고</div>
+  <div class="amount">RM 27,533.33</div>
+  <div style="font-size:0.85em;color:#a16207;margin-top:8px;">2026-03-29 (3월 5주차) 기준</div>
+</div>
+
+<!-- Weekly Attendance & Offering People -->
+<div class="section">
+  <div class="section-title att-bg">주별 참석 인원 &amp; 헌금 인원</div>
+  <div class="table-wrap"><table>
+    <thead>
+      <tr>
+        <th rowspan="2" style="width:14%">날짜</th>
+        <th rowspan="2" style="width:8%;background:#ddd6fe;color:#5b21b6;">참석</th>
+        <th colspan="4" style="text-align:center;background:#bfdbfe;color:#1e40af;">헌금 인원 (명)</th>
+        <th rowspan="2" style="width:8%;background:#fef3c7;color:#92400e;">헌금률</th>
+      </tr>
+      <tr>
+        <th style="background:#dbeafe;color:#1d4ed8;">1부</th>
+        <th style="background:#dbeafe;color:#1d4ed8;">2부</th>
+        <th style="background:#dbeafe;color:#1d4ed8;">온라인</th>
+        <th style="background:#bfdbfe;color:#1e40af;">소계</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="sub-row"><td>02-08 (2월2주)</td><td style="font-weight:700;color:#7c3aed;">340</td><td>41</td><td>103</td><td>23</td><td style="font-weight:600;">167</td><td style="color:#d97706;font-weight:600;">49.1%</td></tr>
+      <tr class="sub-row"><td>02-15 (2월3주)</td><td style="font-weight:700;color:#7c3aed;">329</td><td>37</td><td>107</td><td>10</td><td style="font-weight:600;">154</td><td style="color:#d97706;font-weight:600;">46.8%</td></tr>
+      <tr class="sub-row"><td>02-22 (2월4주)</td><td style="font-weight:700;color:#7c3aed;">322</td><td>33</td><td>100</td><td>15</td><td style="font-weight:600;">148</td><td style="color:#d97706;font-weight:600;">46.0%</td></tr>
+      <tr class="sub-row" style="border-top:2px solid #e2e8f0;"><td>03-01 (3월1주)</td><td style="font-weight:700;color:#7c3aed;">286</td><td>36</td><td>81</td><td>12</td><td style="font-weight:600;">129</td><td style="color:#d97706;font-weight:600;">45.1%</td></tr>
+      <tr class="sub-row"><td>03-08 (3월2주)</td><td style="font-weight:700;color:#7c3aed;">313</td><td>38</td><td>112</td><td>20</td><td style="font-weight:600;">170</td><td style="color:#d97706;font-weight:600;">54.3%</td></tr>
+      <tr class="sub-row"><td>03-15 (3월3주)</td><td style="font-weight:700;color:#7c3aed;">-</td><td>21</td><td>93</td><td>11</td><td style="font-weight:600;">125</td><td style="color:#94a3b8;">-</td></tr>
+      <tr class="sub-row"><td>03-29 (3월5주)</td><td style="font-weight:700;color:#7c3aed;">273</td><td>33</td><td>75</td><td>16</td><td style="font-weight:600;">124</td><td style="color:#d97706;font-weight:600;">45.4%</td></tr>
+    </tbody>
+  </table></div>
+</div>
+
+<!-- Weekly Financial Summary -->
+<div class="section">
+  <div class="section-title bank-bg">주별 재정 현황 (헌금/지출/잔고)</div>
+  <div class="table-wrap"><table>
+    <thead>
+      <tr>
+        <th style="width:14%">날짜</th>
+        <th colspan="3" style="text-align:center;background:#dbeafe;color:#1e40af;">헌금 (RM)</th>
+        <th colspan="2" style="text-align:center;background:#fee2e2;color:#991b1b;">지출 (RM)</th>
+        <th style="background:#dcfce7;color:#166534;">순액</th>
+        <th style="background:#fef3c7;color:#92400e;">은행잔고</th>
+      </tr>
+      <tr>
+        <th></th>
+        <th style="background:#eff6ff;color:#2563eb;">주일</th>
+        <th style="background:#eff6ff;color:#2563eb;">온라인</th>
+        <th style="background:#dbeafe;color:#1e40af;">합계</th>
+        <th style="background:#fef2f2;color:#dc2626;">캐시</th>
+        <th style="background:#fef2f2;color:#dc2626;">온라인</th>
+        <th></th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="sub-row"><td>02-08</td><td>21,941</td><td>7,260</td><td style="font-weight:600;">29,201</td><td>20,442</td><td>-</td><td style="color:#16a34a;font-weight:600;">8,759</td><td>-</td></tr>
+      <tr class="sub-row"><td>02-15</td><td>17,722</td><td>7,550</td><td style="font-weight:600;">25,272</td><td>10,827</td><td>-</td><td style="color:#16a34a;font-weight:600;">14,445</td><td style="font-weight:600;">26,187</td></tr>
+      <tr class="sub-row"><td>02-22</td><td>24,845</td><td>6,995</td><td style="font-weight:600;">31,840</td><td>18,284</td><td>-</td><td style="color:#16a34a;font-weight:600;">13,556</td><td style="font-weight:600;">37,781</td></tr>
+      <tr class="sub-row" style="border-top:2px solid #e2e8f0;"><td>03-01</td><td>17,671</td><td>12,130</td><td style="font-weight:600;">29,801</td><td>46,949</td><td>-</td><td style="color:#dc2626;font-weight:600;">-17,148</td><td style="font-weight:600;">55,558</td></tr>
+      <tr class="sub-row"><td>03-08</td><td>20,659</td><td>5,970</td><td style="font-weight:600;">26,629</td><td>32,754</td><td>-</td><td style="color:#dc2626;font-weight:600;">-6,125</td><td style="font-weight:600;">33,703</td></tr>
+      <tr class="sub-row"><td>03-15</td><td>10,690</td><td>940</td><td style="font-weight:600;">11,630</td><td>832</td><td>1,319</td><td style="color:#16a34a;font-weight:600;">9,479</td><td style="font-weight:600;">24,852</td></tr>
+      <tr class="sub-row"><td>03-29</td><td>12,155</td><td>7,986</td><td style="font-weight:600;">20,141</td><td>1,059</td><td>3,535</td><td style="color:#16a34a;font-weight:600;">15,547</td><td style="font-weight:700;color:#d97706;">27,533</td></tr>
+    </tbody>
+  </table></div>
+</div>
+
+<!-- Monthly Bar -->
+<div class="section">
+  <div class="section-title result-bg">월별 수입/지출 비교</div>
+  <div class="bar-chart">
+
+    <div class="bar-row">
+      <div class="bar-label">12월</div>
+      <div class="bar-container">
+        <div class="bar income-bar" style="width:82.77331516908534%">RM 99,645.00</div>
+        <div class="bar expense-bar" style="width:92.95510994077236%">RM 111,902.15</div>
+      </div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">1월</div>
+      <div class="bar-container">
+        <div class="bar income-bar" style="width:93.23168553699443%">RM 112,235.10</div>
+        <div class="bar expense-bar" style="width:70.4846282282382%">RM 84,851.51</div>
+      </div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">2월</div>
+      <div class="bar-container">
+        <div class="bar income-bar" style="width:100.0%">RM 120,383.00</div>
+        <div class="bar expense-bar" style="width:92.49580090212073%">RM 111,349.22</div>
+      </div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">3월</div>
+      <div class="bar-container">
+        <div class="bar income-bar" style="width:73.26691476371249%">RM 88,200.91</div>
+        <div class="bar expense-bar" style="width:71.81149331716273%">RM 86,448.83</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:20px;justify-content:center;margin-top:16px;font-size:0.8em;color:#64748b;">
+      <span><span style="display:inline-block;width:12px;height:12px;background:#3b82f6;border-radius:2px;margin-right:4px;vertical-align:middle;"></span>수입</span>
+      <span><span style="display:inline-block;width:12px;height:12px;background:#ef4444;border-radius:2px;margin-right:4px;vertical-align:middle;"></span>지출</span>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title income-bg">수입 명세서 - 12월~2월 (Income Statement)</div>
+  <div class="table-wrap"><table>
+    <thead><tr><th style="width:35%">과목</th><th>12월</th><th>1월</th><th>2월</th><th>합계</th><th>구성비</th></tr></thead>
+    <tbody>
+<tr class="category-row"><td>일반헌금</td><td>80,289.00</td><td>92,447.15</td><td>116,098.00</td><td>288,834.15</td><td>86.9%</td></tr><tr class="sub-row"><td>십일조</td><td>32,530.00</td><td>46,112.00</td><td>52,345.00</td><td>130,987.00</td><td>39.4%</td></tr><tr class="sub-row"><td>감사헌금</td><td>24,021.00</td><td>22,766.63</td><td>36,242.00</td><td>83,029.63</td><td>25.0%</td></tr><tr class="sub-row"><td>주일헌금</td><td>18,658.00</td><td>15,445.00</td><td>19,303.35</td><td>53,406.35</td><td>16.1%</td></tr><tr class="sub-row"><td>선교헌금</td><td>1,850.00</td><td>3,333.52</td><td>2,100.00</td><td>7,283.52</td><td>2.2%</td></tr><tr class="sub-row"><td>선교관 건립헌금</td><td>2,850.00</td><td>850.00</td><td>2,822.00</td><td>6,522.00</td><td>2.0%</td></tr><tr class="sub-row"><td>함께 섬겨요</td><td>-</td><td>3,200.00</td><td>2,000.00</td><td>5,200.00</td><td>1.6%</td></tr><tr class="sub-row"><td>목장헌금</td><td>180.00</td><td>640.00</td><td>1,085.65</td><td>1,905.65</td><td>0.6%</td></tr><tr class="sub-row"><td>중고등부 건축헌금</td><td>100.00</td><td>100.00</td><td>100.00</td><td>300.00</td><td>0.1%</td></tr><tr class="sub-row"><td>일반 건축헌금</td><td>100.00</td><td>-</td><td>100.00</td><td>200.00</td><td>0.1%</td></tr><tr class="category-row"><td>교회학교 헌금</td><td>1,951.00</td><td>2,392.00</td><td>4,285.00</td><td>8,628.00</td><td>2.6%</td></tr><tr class="sub-row"><td>감사헌금</td><td>1,951.00</td><td>2,392.00</td><td>4,285.00</td><td>8,628.00</td><td>2.6%</td></tr><tr class="category-row"><td>절기헌금</td><td>17,355.00</td><td>16,199.00</td><td>-</td><td>33,554.00</td><td>10.1%</td></tr><tr class="sub-row"><td>성탄절 헌금</td><td>16,935.00</td><td>-</td><td>-</td><td>16,935.00</td><td>5.1%</td></tr><tr class="sub-row"><td>송구영신예배 헌금</td><td>420.00</td><td>16,199.00</td><td>-</td><td>16,619.00</td><td>5.0%</td></tr><tr class="category-row"><td>각종헌금</td><td>50.00</td><td>750.00</td><td>-</td><td>800.00</td><td>0.2%</td></tr><tr class="sub-row"><td>일반구제헌금</td><td>-</td><td>400.00</td><td>-</td><td>400.00</td><td>0.1%</td></tr><tr class="sub-row"><td>심방감사헌금</td><td>-</td><td>300.00</td><td>-</td><td>300.00</td><td>0.1%</td></tr><tr class="sub-row"><td>장학헌금</td><td>50.00</td><td>50.00</td><td>-</td><td>100.00</td><td>0.0%</td></tr><tr class="category-row"><td>기타헌금</td><td>-</td><td>446.95</td><td>-</td><td>446.95</td><td>0.1%</td></tr><tr class="sub-row"><td>기타헌금</td><td>-</td><td>446.95</td><td>-</td><td>446.95</td><td>0.1%</td></tr><tr class="grand-total-row"><td>수입 합계</td><td>99,645.00</td><td>112,235.10</td><td>120,383.00</td><td>332,263.10</td><td>100.0%</td></tr></tbody></table></div></div>
+<div class="section">
+  <div class="section-title expense-bg">지출 명세서 - 12월~2월 (Expense Statement)</div>
+  <div class="table-wrap"><table>
+    <thead><tr><th style="width:35%">과목</th><th>12월</th><th>1월</th><th>2월</th><th>합계</th><th>구성비</th></tr></thead>
+    <tbody>
+<tr class="category-row"><td>교역자</td><td>47,377.59</td><td>44,402.20</td><td>51,673.75</td><td>143,453.54</td><td>46.6%</td></tr><tr class="sub-row"><td>담임 목사</td><td>21,407.00</td><td>20,874.90</td><td>28,378.75</td><td>70,660.65</td><td>22.9%</td></tr><tr class="sub-row"><td>이한일 목사</td><td>8,000.00</td><td>8,000.00</td><td>8,000.00</td><td>24,000.00</td><td>7.8%</td></tr><tr class="sub-row"><td>김대헌 목사</td><td>2,000.00</td><td>7,000.00</td><td>2,750.00</td><td>11,750.00</td><td>3.8%</td></tr><tr class="sub-row"><td>김성진 목사</td><td>2,000.00</td><td>2,000.00</td><td>2,000.00</td><td>6,000.00</td><td>1.9%</td></tr><tr class="sub-row"><td>정재훈 목사</td><td>2,000.00</td><td>2,000.00</td><td>2,000.00</td><td>6,000.00</td><td>1.9%</td></tr><tr class="sub-row"><td>홍승숙 전도사</td><td>2,000.00</td><td>2,000.00</td><td>2,000.00</td><td>6,000.00</td><td>1.9%</td></tr><tr class="sub-row"><td>송정근 전도사</td><td>6,000.00</td><td>-</td><td>-</td><td>6,000.00</td><td>1.9%</td></tr><tr class="sub-row"><td>이재숙 전도사</td><td>2,000.00</td><td>2,000.00</td><td>2,000.00</td><td>6,000.00</td><td>1.9%</td></tr><tr class="sub-row"><td>고수영 목사</td><td>-</td><td>-</td><td>2,000.00</td><td>2,000.00</td><td>0.6%</td></tr><tr class="sub-row"><td>초빙목사</td><td>1,000.00</td><td>-</td><td>1,000.00</td><td>2,000.00</td><td>0.6%</td></tr><tr class="sub-row"><td>복리후생비</td><td>970.59</td><td>527.30</td><td>1,545.00</td><td>3,042.89</td><td>1.0%</td></tr><tr class="category-row"><td>행정관리국</td><td>32,611.38</td><td>19,528.57</td><td>22,117.14</td><td>74,257.09</td><td>24.1%</td></tr><tr class="sub-row"><td>일반</td><td>5,645.00</td><td>4,040.00</td><td>6,511.30</td><td>16,196.30</td><td>5.3%</td></tr><tr class="sub-row"><td>공과금</td><td>5,441.46</td><td>4,527.10</td><td>5,070.86</td><td>15,039.42</td><td>4.9%</td></tr><tr class="sub-row"><td>차량운영비</td><td>14,722.03</td><td>5,200.47</td><td>10,212.80</td><td>30,135.30</td><td>9.8%</td></tr><tr class="sub-row"><td>차량구입비</td><td>-</td><td>1,800.00</td><td>-</td><td>1,800.00</td><td>0.6%</td></tr><tr class="sub-row"><td>행정일반</td><td>6,802.89</td><td>2,761.00</td><td>322.18</td><td>9,886.07</td><td>3.2%</td></tr><tr class="sub-row"><td>회사관리비</td><td>-</td><td>1,200.00</td><td>-</td><td>1,200.00</td><td>0.4%</td></tr><tr class="category-row"><td>전도국</td><td>6,712.99</td><td>6,966.35</td><td>6,555.17</td><td>20,234.51</td><td>6.6%</td></tr><tr class="sub-row"><td>교회식비</td><td>6,347.59</td><td>6,363.35</td><td>6,353.17</td><td>19,064.11</td><td>6.2%</td></tr><tr class="sub-row"><td>경조사비</td><td>-</td><td>250.00</td><td>-</td><td>250.00</td><td>0.1%</td></tr><tr class="sub-row"><td>기타</td><td>365.40</td><td>353.00</td><td>202.00</td><td>920.40</td><td>0.3%</td></tr><tr class="category-row"><td>교육국</td><td>15,254.30</td><td>4,386.54</td><td>14,287.35</td><td>33,928.19</td><td>11.0%</td></tr><tr class="sub-row"><td>유,초등부</td><td>7,817.30</td><td>1,548.14</td><td>1,439.77</td><td>10,805.21</td><td>3.5%</td></tr><tr class="sub-row"><td>청소년부</td><td>5,454.00</td><td>2,838.40</td><td>1,095.20</td><td>9,387.60</td><td>3.0%</td></tr><tr class="sub-row"><td>어와나</td><td>-</td><td>-</td><td>1,630.38</td><td>1,630.38</td><td>0.5%</td></tr><tr class="sub-row"><td>유스코스타</td><td>-</td><td>-</td><td>10,000.00</td><td>10,000.00</td><td>3.2%</td></tr><tr class="sub-row"><td>교육자료 및 도서구입</td><td>1,489.00</td><td>-</td><td>122.00</td><td>1,611.00</td><td>0.5%</td></tr><tr class="sub-row"><td>기타</td><td>494.00</td><td>-</td><td>-</td><td>494.00</td><td>0.2%</td></tr><tr class="category-row"><td>선교국</td><td>3,950.00</td><td>3,950.00</td><td>3,950.00</td><td>11,850.00</td><td>3.8%</td></tr><tr class="sub-row"><td>선교사 지원비</td><td>3,500.00</td><td>3,500.00</td><td>3,500.00</td><td>10,500.00</td><td>3.4%</td></tr><tr class="sub-row"><td>선교활동 지원비</td><td>450.00</td><td>450.00</td><td>450.00</td><td>1,350.00</td><td>0.4%</td></tr><tr class="category-row"><td>예배국</td><td>1,000.00</td><td>2,543.85</td><td>7,293.80</td><td>10,837.65</td><td>3.5%</td></tr><tr class="sub-row"><td>3부 예배(Sunway GEO)</td><td>1,000.00</td><td>1,000.00</td><td>1,000.00</td><td>3,000.00</td><td>1.0%</td></tr><tr class="sub-row"><td>기타</td><td>-</td><td>1,330.00</td><td>5,333.80</td><td>6,663.80</td><td>2.2%</td></tr><tr class="sub-row"><td>새신자 관리비</td><td>-</td><td>-</td><td>960.00</td><td>960.00</td><td>0.3%</td></tr><tr class="sub-row"><td>절기행사비</td><td>-</td><td>213.85</td><td>-</td><td>213.85</td><td>0.1%</td></tr><tr class="category-row"><td>미디어국</td><td>1,097.00</td><td>500.00</td><td>4,109.00</td><td>5,706.00</td><td>1.9%</td></tr><tr class="sub-row"><td>영상실 운영비</td><td>1,000.00</td><td>500.00</td><td>4,109.00</td><td>5,609.00</td><td>1.8%</td></tr><tr class="sub-row"><td>기타</td><td>97.00</td><td>-</td><td>-</td><td>97.00</td><td>0.0%</td></tr><tr class="category-row"><td>음악국</td><td>1,130.00</td><td>-</td><td>595.96</td><td>1,725.96</td><td>0.6%</td></tr><tr class="sub-row"><td>절기(칸타타)행사비</td><td>1,130.00</td><td>-</td><td>-</td><td>1,130.00</td><td>0.4%</td></tr><tr class="sub-row"><td>2부 찬양대 연습비</td><td>-</td><td>-</td><td>595.96</td><td>595.96</td><td>0.2%</td></tr><tr class="category-row"><td>구제봉사국</td><td>500.00</td><td>500.00</td><td>500.00</td><td>1,500.00</td><td>0.5%</td></tr><tr class="sub-row"><td>구제비</td><td>500.00</td><td>500.00</td><td>500.00</td><td>1,500.00</td><td>0.5%</td></tr><tr class="category-row"><td>재정국</td><td>-</td><td>2,074.00</td><td>-</td><td>2,074.00</td><td>0.7%</td></tr><tr class="sub-row"><td>프로그램 운영비(디모데)</td><td>-</td><td>2,074.00</td><td>-</td><td>2,074.00</td><td>0.7%</td></tr><tr class="grand-total-row"><td>지출 합계</td><td>109,633.26</td><td>84,851.51</td><td>111,082.17</td><td>305,566.94</td><td>100.0%</td></tr></tbody></table></div></div>
+<div class="section">
+  <div class="section-title result-bg">월별 수지 결산 (Net Result)</div>
+  <div class="table-wrap"><table>
+    <thead><tr><th style="width:25%">구분</th><th>12월</th><th>1월</th><th>2월</th><th>3월</th><th>합계</th></tr></thead>
+    <tbody>
+<tr class="category-row"><td>총 수입</td><td class="income">99,645.00</td><td class="income">112,235.10</td><td class="income">120,383.00</td><td class="income">88,200.91</td><td class="income">420,464.01</td></tr><tr class="category-row"><td>총 지출</td><td class="expense">111,902.15</td><td class="expense">84,851.51</td><td class="expense">111,349.22</td><td class="expense">86,448.83</td><td class="expense">394,551.71</td></tr><tr class="grand-total-row"><td>수지 차액</td><td style="color:#fca5a5">-12,257.15</td><td style="color:#4ade80">27,383.59</td><td style="color:#4ade80">9,033.78</td><td style="color:#4ade80">1,752.08</td><td style="color:#4ade80">25,912.30</td></tr></tbody></table></div></div>
+<div class="footer">본 재무제표는 업로드된 수입/지출 XLS 데이터 및 주별 스크린샷 데이터를 기반으로 생성되었습니다. &middot; 생성일: 2026-03-24 10:27</div>
+</div></body></html>
